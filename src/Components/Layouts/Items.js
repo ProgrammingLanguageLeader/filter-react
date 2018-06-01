@@ -15,44 +15,14 @@ const styles = theme => ({
 });
 
 class Items extends Component {
-  state = {
-    data: [
-      {
-        name: 'Макдак',
-        photo: '',
-        type: 'Фастфуд',
-        kitchen: 'Европейская',
-        address: 'ул. Пушкина, дом Колотушкина 1',
-        timeStart: '09:00',
-        timeEnd: '19:00',
-      },
-      {
-        name: 'Макдак',
-        photo: '',
-        type: 'Фастфуд',
-        kitchen: 'Европейская',
-        address: 'ул. Пушкина, дом Колотушкина 2',
-        timeStart: '09:00',
-        timeEnd: '19:00',
-      },
-      {
-        name: 'Макдак',
-        photo: '',
-        type: 'Фастфуд',
-        kitchen: 'Европейская',
-        address: 'ул. Пушкина, дом Колотушкина 3',
-        timeStart: '09:00',
-        timeEnd: '19:00',
-      },
-    ]
-  }
   render() {
-    const { classes } = this.props;
+    const { classes, data } = this.props;
 
-    return(
+    return (
       <div className={classes.root}>
         <Grid container spacing={24}>
-          {this.state.data.map(restaurant => (
+          { data.map(restaurant => (
+            // TODO: replace key to a unique value
             <Grid item xs={12} sm={6} key={restaurant.name}>
               <Paper className={classes.paper}>
                 <Typography variant="headline" component="h3">
@@ -69,7 +39,7 @@ class Items extends Component {
                 </Typography>
               </Paper>
             </Grid>
-          ))}
+          )) }
         </Grid>
       </div>
     )

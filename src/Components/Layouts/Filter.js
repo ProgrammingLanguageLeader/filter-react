@@ -1,4 +1,4 @@
-import React, { Component, Fragment } from 'react';
+import React, { Component } from 'react';
 import MaskedInput from 'react-text-mask';
 import createNumberMask from 'text-mask-addons/dist/createNumberMask';
 import {
@@ -16,20 +16,20 @@ const styles = theme => ({
   }
 });
 
-const station_list = [
+const metroStationList = [
   'Арбатская',
   'Славянский бульвар',
   'Серпуховская',
   'Киевская',
 ];
 
-const type_list = [
+const storeTypeList = [
   'Заведение быстрого питания',
   'Кафе',
   'Ресторан',
 ];
 
-const kitchen_list = [
+const kitchenTypeList = [
   'Итальянская',
   'Кавказская',
   'Мексиканская',
@@ -55,33 +55,42 @@ function TextMaskPrice(props) {
 }
 
 class Filter extends Component {
-  state = {
-    station: '',
-    type: '',
-    kitchen: [],
-    alcohol: false,
-    hookah: false,
-    priceStart: '0',
-    priceEnd: '10000',
-    timeStart: '09:00',
-    timeEnd: '20:00',
-  };
+  constructor(props) {
+    super(props);
+    this.state = {
+      station: '',
+      type: '',
+      kitchen: [],
+      alcohol: false,
+      hookah: false,
+      priceStart: '0',
+      priceEnd: '10000',
+      timeStart: '09:00',
+      timeEnd: '20:00',
+    };
 
-  handleChange = event => {
+    this.handleCheckboxChange = this.handleCheckboxChange.bind(this);
+    this.handleKitchenChange = this.handleKitchenChange.bind(this);
+    this.handleSelectChange = this.handleSelectChange.bind(this);
+  }
+
+  handleSelectChange = event => {
     this.setState({ [event.target.name]: event.target.value });
+    this.props.updateData(this.state);
   };
 
-  handleKitchen = event => {
+  handleKitchenChange = event => {
     this.setState({ kitchen: event.target.value });
+    this.props.updateData(this.state);
   };
 
-  handleCheckbox = event => {
+  handleCheckboxChange = event => {
     this.setState({ [event.target.name]: event.target.checked });
+    this.props.updateData(this.state);
   }
 
   render() {
     const { classes } = this.props;
-    const { numberformat } = this.state;
 
     return(      
       <form autoComplete="off">
@@ -93,7 +102,7 @@ class Filter extends Component {
           <InputLabel htmlFor="station">Станция метро</InputLabel>
           <Select
             value={this.state.station}
-            onChange={this.handleChange}
+            onChange={this.handleSelectChange}
             inputProps={{
               name: 'station',
               id: 'station',
@@ -102,7 +111,7 @@ class Filter extends Component {
             <MenuItem key="" value="">
               <em>Не выбрано</em>
             </MenuItem>
-            {station_list.map(station => (
+            {metroStationList.map(station => (
               <MenuItem key={station} value={station}>
                 {station}
               </MenuItem>
@@ -113,7 +122,7 @@ class Filter extends Component {
           <InputLabel htmlFor="type">Тип заведения</InputLabel>
           <Select
             value={this.state.type}
-            onChange={this.handleChange}
+            onChange={this.handleSelectChange}
             inputProps={{
               name: 'type',
               id: 'type',
@@ -122,9 +131,11 @@ class Filter extends Component {
             <MenuItem value="">
               <em>Не выбрано</em>
             </MenuItem>
-            <MenuItem value={'Заведение быстрого питания'}>Заведение быстрого питания</MenuItem>
-            <MenuItem value={'Кафе'}>Кафе</MenuItem>
-            <MenuItem value={'Ресторан'}>Ресторан</MenuItem>
+            {storeTypeList.map(storeType => (
+              <MenuItem key={storeType} value={storeType}>
+                {storeType}
+              </MenuItem>
+            ))}
           </Select>
         </FormControl>
         <FormControl className={classes.formControl} fullWidth>
@@ -132,11 +143,11 @@ class Filter extends Component {
           <Select
             multiple
             value={this.state.kitchen}
-            onChange={this.handleKitchen}
+            onChange={this.handleKitchenChange}
             input={<Input id="kitchen" />}
             renderValue={selected => selected.join(', ')}
           >
-            {kitchen_list.map(name => (
+            {kitchenTypeList.map(name => (
               <MenuItem key={name} value={name}>
                 <Checkbox checked={this.state.kitchen.indexOf(name) > -1} />
                 <ListItemText primary={name} />
@@ -154,7 +165,7 @@ class Filter extends Component {
               control={
                 <Checkbox
                   checked={this.state.alcohol}
-                  onChange={this.handleCheckbox}
+                  onChange={this.handleCheckboxChange}
                   inputProps={{
                     name: 'alcohol',
                     id: 'alcohol',
@@ -168,7 +179,7 @@ class Filter extends Component {
               control={
                 <Checkbox
                   checked={this.state.hookah}
-                  onChange={this.handleCheckbox}
+                  onChange={this.handleCheckboxChange}
                   inputProps={{
                     name: 'hookah',
                     id: 'hookah',
@@ -188,7 +199,7 @@ class Filter extends Component {
           <InputLabel htmlFor="priceStart">От</InputLabel>
           <Input
             value={this.state.priceStart}
-            onChange={this.handleChange}
+            onChange={this.handleSelectChange}
             inputProps={{
               name: 'priceStart',
               id: 'priceStart',
@@ -200,7 +211,7 @@ class Filter extends Component {
           <InputLabel htmlFor="priceEnd">До</InputLabel>
           <Input
             value={this.state.priceEnd}
-            onChange={this.handleChange}
+            onChange={this.handleSelectChange}
             inputProps={{
               name: 'priceEnd',
               id: 'priceEnd',
@@ -216,7 +227,7 @@ class Filter extends Component {
           <InputLabel htmlFor="timeStart">C</InputLabel>
           <Input
             value={this.state.timeStart}
-            onChange={this.handleChange}
+            onChange={this.handleSelectChange}
             type="time"
             inputProps={{
               name: 'timeStart',
@@ -229,7 +240,7 @@ class Filter extends Component {
           <InputLabel htmlFor="timeEnd">До</InputLabel>
           <Input
             value={this.state.timeEnd}
-            onChange={this.handleChange}
+            onChange={this.handleSelectChange}
             type="time"
             inputProps={{
               name: 'timeEnd',
